@@ -45,20 +45,7 @@ const invoiceSchema = new mongoose.Schema({
         type: String,
         enum: ['En attente', 'Payé', 'Partiellement payé', 'Annulé'],
         default: 'En attente'
-    },
-    notes: [{
-        author: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        },
-        message: {
-            type: String
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now
-        }
-    }]
+    }
 }, { 
     timestamps: true 
 });
