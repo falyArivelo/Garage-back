@@ -55,7 +55,7 @@ router.post('/login', async (req, res) => {
     res.json({ token })
 })
 
-// Route pour obtenir tous les utilisateurs (accessible uniquement par les admins)
+// Route pour obtenir tous les utilisateurs (accessible uniquement par les manager)
 router.get('/users', verifyToken, verifyRole(['manager']), async (req, res) => {
     try {
         // Récupérer tous les utilisateurs depuis la base de données
