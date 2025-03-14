@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs')
 const User = require('../models/User')
 const { verifyToken, verifyRole } = require('../middleware/auth');
-const { createUser, updateUser, deleteUser, getAllUsers,getUserById } = require('../controller/userController');
+const { createUser, updateUser, deleteUser, getAllUsers, getUserById } = require('../controller/userController');
 
 const router = express.Router();
 
@@ -52,7 +52,12 @@ router.post('/login', async (req, res) => {
 
     // Créer un JWT
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token })
+    res.json({
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        token: token
+    })
 })
 
 // Route pour obtenir tous les utilisateurs (accessible uniquement par les manager)
