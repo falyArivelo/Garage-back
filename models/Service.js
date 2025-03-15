@@ -14,7 +14,7 @@ const serviceSchema = new mongoose.Schema({
         required: true
     },
     estimatedDuration: {
-        type: String,
+        type: Number,
     },
     category: {
         type: String,
