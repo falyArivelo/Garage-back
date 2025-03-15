@@ -6,6 +6,11 @@ const serviceSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    category: {
+        type: String,
+        enum: ['Réparation', 'Entretien', 'Diagnostic'],
+        required: true
+    },
     description: {
         type: String,
     },
@@ -15,11 +20,6 @@ const serviceSchema = new mongoose.Schema({
     },
     estimatedDuration: {
         type: String,
-    },
-    category: {
-        type: String,
-        enum: ['Réparation', 'Entretien', 'Diagnostic'],
-        required: true
     },
     availability: {
         type: Boolean,

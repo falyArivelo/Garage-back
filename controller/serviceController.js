@@ -3,14 +3,14 @@ const Service = require('../models/Service');
 // Créer un nouveau service
 const createService = async (req, res) => {
     try {
-        const { name, description, price, estimatedDuration, category, availability, image } = req.body;
+        const { name, category, description, price, estimatedDuration, availability, image } = req.body;
 
         const newService = new Service({
             name,
+            category,
             description,
             price,
             estimatedDuration,
-            category,
             availability,
             image
         });
@@ -49,11 +49,11 @@ const getServiceById = async (req, res) => {
 // Mettre à jour un service
 const updateService = async (req, res) => {
     try {
-        const { name, description, price, estimatedDuration, category, availability, image } = req.body;
+        const { name, category, description, price, estimatedDuration, availability, image } = req.body;
 
         const updatedService = await Service.findByIdAndUpdate(
             req.params.id,
-            { name, description, price, estimatedDuration, category, availability, image },
+            { name, category, description, price, estimatedDuration, availability, image },
             { new: true }  // Cette option retourne le service mis à jour
         );
 
