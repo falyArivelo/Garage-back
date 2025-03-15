@@ -25,6 +25,9 @@ const serviceSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    piece: {
+        type: String,
+    },
     image: {
         type: String,
         default: null
