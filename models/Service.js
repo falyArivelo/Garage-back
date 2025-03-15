@@ -19,11 +19,14 @@ const serviceSchema = new mongoose.Schema({
         required: true
     },
     estimatedDuration: {
-        type: String,
+        type: Number,
     },
     availability: {
         type: Boolean,
         default: true
+    },
+    piece: {
+        type: String,
     },
     image: {
         type: String,
