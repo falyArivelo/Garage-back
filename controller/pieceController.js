@@ -1,6 +1,7 @@
 const Piece = require('../models/Piece');
 
 // Créer une nouvelle piece
+//ovaina otrany amin vehicle
 const createPiece = async (req, res) => {
     try {
         console.log("Données reçues :", req.body); // DEBUG
