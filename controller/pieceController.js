@@ -1,9 +1,16 @@
 const Piece = require('../models/Piece');
 
 // Créer une nouvelle piece
+//ovaina otrany amin vehicle
 const createPiece = async (req, res) => {
     try {
-        const { name, category, description, price, stock, createDate} = req.body;
+        console.log("Données reçues :", req.body); // DEBUG
+
+        const { name, category, description, price, stock, createDate } = req.body;
+
+        if (!name || !category || price <= 0 || !createDate) {
+            return res.status(400).json({ message: "Données invalides" });
+        }
 
         const newPiece = new Piece({
             name,
@@ -16,9 +23,10 @@ const createPiece = async (req, res) => {
 
         await newPiece.save();
 
-        res.status(201).json({ message: "Piece créé avec succès", piece: newPiece });
+        res.status(201).json({ message: "Pièce créée avec succès", piece: newPiece });
     } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la création de la piece", error: error.message });
+        console.error("Erreur serveur :", error); // DEBUG
+        res.status(500).json({ message: "Erreur lors de la création de la pièce", error: error.message });
     }
 };
 

@@ -21,10 +21,6 @@ const pieceSchema = new mongoose.Schema({
     stock: {
         type: Number,
         required: true
-    },
-    createDate: {
-        type: Date,
-        required: true
     }
 })
 
