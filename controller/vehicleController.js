@@ -1,7 +1,7 @@
 const Vehicle = require('../models/Vehicle');
 
 // Ajouter un véhicule
-exports.createVehicle = async (req, res) => {
+const createVehicle = async (req, res) => {
     try {
         const vehicle = new Vehicle(req.body);
         await vehicle.save();
@@ -12,17 +12,47 @@ exports.createVehicle = async (req, res) => {
 };
 
 // Obtenir tous les véhicules
-exports.getAllVehicles = async (req, res) => {
+const getAllVehicles = async (req, res) => {
     try {
         const vehicles = await Vehicle.find().populate('owner', 'username email');
-        res.status(200).json(vehicles);
+
+        // Ajouter le champ progress en fonction du status
+        const vehiclesWithProgress = vehicles.map(vehicle => {
+            return {
+                ...vehicle.toObject(), // convertir le document Mongoose en objet JS
+                progress: getProgressFromStatus(vehicle.status)
+            };
+        });
+
+        res.status(200).json(vehiclesWithProgress);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Vehicle ME
+const getAllVehiclesMe = async (req, res) => {
+    try {
+        const userId = req.query.user_id;
+
+        const vehicles = await Vehicle.find({ owner: userId });
+
+        // Ajouter le champ progress en fonction du status
+        const vehiclesWithProgress = vehicles.map(vehicle => {
+            return {
+                ...vehicle.toObject(), // convertir le document Mongoose en objet JS
+                progress: getProgressFromStatus(vehicle.status)
+            };
+        });
+
+        res.status(200).json(vehiclesWithProgress);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
 // Obtenir un véhicule par son ID
-exports.getVehicleById = async (req, res) => {
+const getVehicleById = async (req, res) => {
     try {
         const vehicle = await Vehicle.findById(req.params.id).populate('owner', 'username email');
         if (!vehicle) return res.status(404).json({ message: 'Véhicule non trouvé' });
@@ -33,7 +63,7 @@ exports.getVehicleById = async (req, res) => {
 };
 
 // Mettre à jour un véhicule
-exports.updateVehicle = async (req, res) => {
+const updateVehicle = async (req, res) => {
     try {
         const vehicle = await Vehicle.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
         if (!vehicle) return res.status(404).json({ message: 'Véhicule non trouvé' });
@@ -44,7 +74,7 @@ exports.updateVehicle = async (req, res) => {
 };
 
 // Supprimer un véhicule
-exports.deleteVehicle = async (req, res) => {
+const deleteVehicle = async (req, res) => {
     try {
         const vehicle = await Vehicle.findByIdAndDelete(req.params.id);
         if (!vehicle) return res.status(404).json({ message: 'Véhicule non trouvé' });
@@ -53,3 +83,19 @@ exports.deleteVehicle = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+function getProgressFromStatus(status) {
+    switch (status) {
+        case 'Actif':
+            return 'primary';
+        case 'En réparation':
+            return 'secondary';
+        case 'Hors service':
+            return 'error';
+        default:
+            return 'neutral'; // valeur par défaut
+    }
+}
+
+
+module.exports = { createVehicle, getAllVehicles, getAllVehiclesMe, getAllVehiclesMe, getVehicleById, updateVehicle, deleteVehicle };
