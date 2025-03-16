@@ -16,10 +16,6 @@ const appointmentSchema = new mongoose.Schema({
         ref: 'Service',
         required: true
     }],
-    assignedMechanic: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    },
     status: {
         type: String,
         enum: ['En attente', 'Confirmé', 'En cours', 'Terminé', 'Annulé'],

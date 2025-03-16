@@ -78,8 +78,18 @@ const getUserById = async (req,res)=>{
         }
         res.status(200).json({ user });
     } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la récupération de l'utilisateur", error: err });
+        res.status(500).json({ message: "Erreur lors de la récupération de l'utilisateur", error: error });
     }
 }
 
-module.exports = { createUser, updateUser, deleteUser, getAllUsers ,getUserById};
+
+const getClients = async (req, res) => {
+    try {
+      const clients = await User.find({ role: 'client' });
+      res.status(200).json(clients);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+  
+module.exports = { createUser, updateUser, deleteUser, getAllUsers ,getUserById,getClients};
