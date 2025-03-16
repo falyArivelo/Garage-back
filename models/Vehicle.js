@@ -34,16 +34,6 @@ const vehicleSchema = new mongoose.Schema({
     mileage: {
         type: Number
     },
-    vin: {
-        type: String,
-        unique: true
-    },
-    insuranceExpiry: {
-        type: Date
-    },
-    lastServiceDate: {
-        type: Date
-    },
     status: {
         type: String,
         enum: ['Actif', 'En réparation', 'Hors service'],
