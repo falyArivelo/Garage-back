@@ -3,9 +3,9 @@ const Piece = require('../models/Piece');
 // Créer une nouvelle piece
 exports.createPiece = async (req, res) => {
     try {
-        const piece = new Piece(req.body);
+        const newPiece = new Piece(req.body);
         await newPiece.save();
-        res.status(201).json({appointment});
+        res.status(201).json({newPiece});
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
