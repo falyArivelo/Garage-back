@@ -1,47 +1,28 @@
 const Piece = require('../models/Piece');
 
 // Créer une nouvelle piece
-//ovaina otrany amin vehicle
-const createPiece = async (req, res) => {
+exports.createPiece = async (req, res) => {
     try {
-        console.log("Données reçues :", req.body); // DEBUG
-
-        const { name, category, description, price, stock, createDate } = req.body;
-
-        if (!name || !category || price <= 0 || !createDate) {
-            return res.status(400).json({ message: "Données invalides" });
-        }
-
-        const newPiece = new Piece({
-            name,
-            category,
-            description,
-            price,
-            stock,
-            createDate
-        });
-
+        const piece = new Piece(req.body);
         await newPiece.save();
-
-        res.status(201).json({ message: "Pièce créée avec succès", piece: newPiece });
+        res.status(201).json({appointment});
     } catch (error) {
-        console.error("Erreur serveur :", error); // DEBUG
-        res.status(500).json({ message: "Erreur lors de la création de la pièce", error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
 // Obtenir tous les pieces
-const getAllPieces = async (req, res) => {
+exports.getAllPieces = async (req, res) => {
     try {
         const pieces = await Piece.find();
         res.status(200).json(pieces);
     } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la récupération des pieces", error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
 // Obtenir une piece par son ID
-const getPieceById = async (req, res) => {
+exports.getPieceById = async (req, res) => {
     try {
         const piece = await Piece.findById(req.params.id);
         if (!piece) {
@@ -49,33 +30,25 @@ const getPieceById = async (req, res) => {
         }
         res.status(200).json(piece);
     } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la récupération de la piece", error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
 // Mettre à jour une piece
-const updatePiece= async (req, res) => {
+exports.updatePiece= async (req, res) => {
     try {
-        const { name, category, description, price, stock, createDate } = req.body;
-
-        const updatedPiece = await Piece .findByIdAndUpdate(
-            req.params.id,
-            { name, category, description, price, stock, createDate },
-            { new: true }  // Cette option retourne la piece mis à jour
-        );
-
-        if (!updatedPiece) {
+        const piece =  await Vehicle.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        if (!piece) {
             return res.status(404).json({ message: "Piece non trouvé" });
         }
-
-        res.status(200).json({ message: "Piece mis à jour avec succès", piece: updatedPiece });
+        res.status(200).json(piece);
     } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la mise à jour de la piece", error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
 // Supprimer une piece
-const deletePiece = async (req, res) => {
+exports.deletePiece = async (req, res) => {
     try {
         const deletedPiece = await Piece.findByIdAndDelete(req.params.id);
         if (!deletedPiece) {
@@ -83,14 +56,6 @@ const deletePiece = async (req, res) => {
         }
         res.status(200).json({ message: "Piece supprimé avec succès" });
     } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la suppression de la piece", error: error.message });
+        res.status(500).json({ message: error.message });
     }
-};
-
-module.exports = {
-    createPiece,
-    getAllPieces,
-    getPieceById,
-    updatePiece,
-    deletePiece
 };
