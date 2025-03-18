@@ -8,7 +8,7 @@ const pieceSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['Moteur', 'Système de freinage', 'Electrique et Electronique', 'Echappement'],
+        enum: ['Moteur', 'Système de freinage', 'Électrique et Électronique', 'Échappement'],
         required: true
     },
     description: {
