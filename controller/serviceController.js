@@ -4,80 +4,45 @@ const Piece = require('../models/Piece');
 // Créer un nouveau service
 const createService = async (req, res) => {
     try {
-        const { name, category, description, price, estimatedDuration, availability, pieces, image } = req.body;
-
-        // Vérifier si les pièces existent
-        const existingPieces = await Piece.find({ _id: { $in: pieces } });
-        if (existingPieces.length !== pieces.length) {
-            return res.status(400).json({ error: 'Pièces invalides.' });
-        }
-
-        const newService = new Service({
-            name,
-            category,
-            description,
-            price,
-            estimatedDuration,
-            availability,
-            pieces,
-            image
-        });
-
-        await newService.save();
-
-        res.status(201).json({ message: "Service créé avec succès", service: newService });
+        const service = new Service(req.body);
+        await service.save();
+        res.status(201).json(service);
     } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la création du service", error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
 // Obtenir tous les services
 const getAllServices = async (req, res) => {
     try {
-        const services = await Service.find().populate('pieces');// Récupère les détails des pièces
+        const services = await Service.find().populate('piece', 'name category price stock');// Récupère les détails des pièces
         res.status(200).json(services);
     } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la récupération des services", error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
 // Obtenir un service par son ID
 const getServiceById = async (req, res) => {
     try {
-        const service = await Service.findById(req.params.id).populate('pieces');// Récupère les détails des pièces
+        const service = await Service.findById(req.params.id).populate('piece', 'name category price stock');// Récupère les détails des pièces
         if (!service) {
             return res.status(404).json({ message: "Service non trouvé" });
         }
         res.status(200).json(service);
     } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la récupération du service", error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
 // Mettre à jour un service
 const updateService = async (req, res) => {
     try {
-        const { name, category, description, price, estimatedDuration, availability, pieces, image } = req.body;
-
-        // Vérifier si des pièces sont fournies et valides
-        if (pieces) {
-            const existingPieces = await Piece.find({ _id: { $in: pieces } });
-            if (existingPieces.length !== pieces.length) {
-                return res.status(400).json({ message: "Une ou plusieurs pièces sont invalides." });
-            }
-        }
-
-        const updatedService = await Service.findByIdAndUpdate(
-            req.params.id,
-            { name, category, description, price, estimatedDuration, availability, pieces, image },
-            { new: true }  
-        ).populate('pieces');
-
-        if (!updatedService) {
+        const service = await Service.findByIdAndUpdate(req.params.id,  req.body, { new: true, runValidators: true });
+        if (!service) {
             return res.status(404).json({ message: "Service non trouvé" });
         }
-
-        res.status(200).json({ message: "Service mis à jour avec succès", service: updatedService });
+        res.status(200).json(service);
     } catch (error) {
         res.status(500).json({ message: "Erreur lors de la mise à jour du service", error: error.message });
     }
@@ -106,7 +71,7 @@ const deleteService = async (req, res) => {
        
         res.status(200).json({ message: "Service supprimé avec succès" });
     } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la suppression du service", error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 

@@ -28,7 +28,8 @@ const serviceSchema = new mongoose.Schema({
     pieces: [
         { 
             type: mongoose.Schema.Types.ObjectId, 
-            ref: 'Piece' 
+            ref: 'Piece',
+            required: true
         }
     ],
     image: {
