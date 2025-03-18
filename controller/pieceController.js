@@ -34,10 +34,25 @@ exports.getPieceById = async (req, res) => {
     }
 };
 
+// Recherche une pièce par son nom
+exports.getPieceByName = async (req, res) => {
+    try {
+      const piece = await Piece.findOne({ name: req.params.name });
+  
+      if (!piece) {
+        return res.status(404).json(null);
+      }
+  
+      res.json(piece);
+    } catch (error) {
+      res.status(500).json({ message: "Erreur serveur", error });
+    }
+};
+
 // Mettre à jour une piece
 exports.updatePiece= async (req, res) => {
     try {
-        const piece =  await Vehicle.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        const piece =  await Piece.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
         if (!piece) {
             return res.status(404).json({ message: "Piece non trouvé" });
         }
