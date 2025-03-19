@@ -1,7 +1,7 @@
 const Piece = require('../models/Piece');
 
 // Créer une nouvelle piece
-exports.createPiece = async (req, res) => {
+createPiece = async (req, res) => {
     try {
         const newPiece = new Piece(req.body);
         await newPiece.save();
@@ -12,7 +12,7 @@ exports.createPiece = async (req, res) => {
 };
 
 // Obtenir tous les pieces
-exports.getAllPieces = async (req, res) => {
+getAllPieces = async (req, res) => {
     try {
         const pieces = await Piece.find();
         res.status(200).json(pieces);
@@ -22,7 +22,7 @@ exports.getAllPieces = async (req, res) => {
 };
 
 // Obtenir une piece par son ID
-exports.getPieceById = async (req, res) => {
+getPieceById = async (req, res) => {
     try {
         const piece = await Piece.findById(req.params.id);
         if (!piece) {
@@ -35,7 +35,7 @@ exports.getPieceById = async (req, res) => {
 };
 
 // Recherche une pièce par son nom
-exports.getPieceByName = async (req, res) => {
+getPieceByName = async (req, res) => {
     try {
       const piece = await Piece.findOne({ name: req.params.name });
   
@@ -50,7 +50,7 @@ exports.getPieceByName = async (req, res) => {
 };
 
 // Mettre à jour une piece
-exports.updatePiece= async (req, res) => {
+updatePiece= async (req, res) => {
     try {
         const piece =  await Piece.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
         if (!piece) {
@@ -63,7 +63,7 @@ exports.updatePiece= async (req, res) => {
 };
 
 // Supprimer une piece
-exports.deletePiece = async (req, res) => {
+deletePiece = async (req, res) => {
     try {
         const deletedPiece = await Piece.findByIdAndDelete(req.params.id);
         if (!deletedPiece) {
@@ -73,4 +73,13 @@ exports.deletePiece = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+};
+
+module.exports = {
+    createPiece,
+    getAllPieces,
+    getPieceById,
+    getPieceByName,
+    updatePiece,
+    deletePiece
 };
