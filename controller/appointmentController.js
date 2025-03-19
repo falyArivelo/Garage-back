@@ -1,11 +1,27 @@
 const Appointment = require('../models/Appointment');
-
+const { isAppointmentSlotAvailable } = require('../helpers/appointmentHelper')
 // Créer un rendez-vous
 const createAppointment = async (req, res) => {
     try {
+
+        // const appointmentData = req.body;
         const appointment = new Appointment(req.body);
+
+        // Vérifier si le créneau est disponible
+        const isAvailable = await isAppointmentSlotAvailable(appointment);
+
+        if (!isAvailable) {
+            return res.status(409).json({ message: "Aucun créneau disponible pour cette date et heure." });
+        }
+
+        // const appointment = new Appointment(req.body);
+
         await appointment.save();
-        res.status(201).json(appointment);
+        res.status(201).json({
+            success: true,
+            message: "Votre rendez-vous a bien été pris en compte. Vous recevrez un email de confirmation sous peu.",
+            appointment,
+        });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
