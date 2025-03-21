@@ -15,7 +15,8 @@ const createService = async (req, res) => {
 // Obtenir tous les services
 const getAllServices = async (req, res) => {
     try {
-        const services = await Service.find().populate('piece', 'name category price stock');// Récupère les détails des pièces
+        const services = await Service.find().populate('pieces', 'name category price stock');// Récupère les détails des pièces
+        console.log("iciii", services)
         res.status(200).json(services);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -25,7 +26,7 @@ const getAllServices = async (req, res) => {
 // Obtenir un service par son ID
 const getServiceById = async (req, res) => {
     try {
-        const service = await Service.findById(req.params.id).populate('piece', 'name category price stock');// Récupère les détails des pièces
+        const service = await Service.findById(req.params.id).populate('pieces', 'name category price stock');// Récupère les détails des pièces
         if (!service) {
             return res.status(404).json({ message: "Service non trouvé" });
         }
