@@ -8,11 +8,11 @@ const createAppointment = async (req, res) => {
         const appointment = new Appointment(req.body);
 
         // Vérifier si le créneau est disponible
-        const isAvailable = await isAppointmentSlotAvailable(appointment);
+        // const isAvailable = await isAppointmentSlotAvailable(appointment);
 
-        if (!isAvailable) {
-            return res.status(409).json({ message: "Aucun créneau disponible pour cette date et heure." });
-        }
+        // if (!isAvailable) {
+        //     return res.status(409).json({ message: "Aucun créneau disponible pour cette date et heure." });
+        // }
 
         // const appointment = new Appointment(req.body);
 
