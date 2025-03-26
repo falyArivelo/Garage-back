@@ -8,6 +8,8 @@ router.post('/services', verifyToken, verifyRole(['manager']), serviceController
 
 // Obtenir tous les services - accessible pour tout utilisateur authentifié
 router.get('/services', verifyToken, serviceController.getAllServices);
+// Obtenir tous les services - accessible pour tout utilisateur authentifié
+router.get('/services/all/available', verifyToken, serviceController.getAvailableServices);
 
 // Obtenir un service par ID - accessible pour tout utilisateur authentifié
 router.get('/services/:id', verifyToken, serviceController.getServiceById);

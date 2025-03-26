@@ -23,6 +23,18 @@ const getAllServices = async (req, res) => {
     }
 };
 
+// Obtenir tous les services disponibles
+const getAvailableServices = async (req, res) => {
+    try {
+        const services = await Service.find({ availability: true })
+            .populate('pieces', 'name category description price stock'); // Récupère les détails des pièces
+        console.log("Services disponibles:", services);
+        res.status(200).json(services);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // Obtenir un service par son ID
 const getServiceById = async (req, res) => {
     try {
@@ -39,7 +51,7 @@ const getServiceById = async (req, res) => {
 // Mettre à jour un service
 const updateService = async (req, res) => {
     try {
-        const service = await Service.findByIdAndUpdate(req.params.id,  req.body, { new: true, runValidators: true });
+        const service = await Service.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
         if (!service) {
             return res.status(404).json({ message: "Service non trouvé" });
         }
@@ -69,7 +81,7 @@ const deleteService = async (req, res) => {
         // Supprimer le service
         await Service.findByIdAndDelete(req.params.id);
         const deletedService = await Service.findByIdAndDelete(req.params.id);
-       
+
         res.status(200).json({ message: "Service supprimé avec succès" });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -81,5 +93,6 @@ module.exports = {
     getAllServices,
     getServiceById,
     updateService,
-    deleteService
+    deleteService,
+    getAvailableServices
 };
