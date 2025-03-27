@@ -10,7 +10,7 @@ router.post('/appointments', appointmentController.createAppointment);
 router.get('/appointments', verifyToken, appointmentController.getAllAppointments);
 
 // Obtenir les rendez-vous d'un client - accessible pour tout utilisateur authentifié
-router.get('/appointments/client/:clientId', verifyToken,verifyRole(['client']), appointmentController.getAppointmentsByClient);
+router.get('/appointments/client', verifyToken,verifyRole(['client']), appointmentController.getAppointmentsByClient);
 
 // Obtenir un rendez-vous par ID - accessible pour tout utilisateur authentifié
 router.get('/appointments/:id', verifyToken, appointmentController.getAppointmentById);
