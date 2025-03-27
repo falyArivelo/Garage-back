@@ -40,8 +40,10 @@ const getAllAppointments = async (req, res) => {
 // Obtenir les rendez-vous d'un client
 const getAppointmentsByClient = async (req, res) => {
     try {
-        const { clientId } = req.params;
-        const appointments = await Appointment.find({ client: clientId }).populate('vehicle', 'model brand');
+        const userId = req.query.user_id;
+        const appointments = await Appointment.find({ client: userId })
+        .populate('vehicle')
+        .populate('services');
         if (!appointments) return res.status(404).json({ message: 'Aucun rendez-vous trouvé pour ce client' });
         res.status(200).json(appointments);
     } catch (error) {
@@ -80,6 +82,18 @@ const deleteAppointment = async (req, res) => {
     try {
         const appointment = await Appointment.findByIdAndDelete(req.params.id);
         if (!appointment) return res.status(404).json({ message: 'Rendez-vous non trouvé' });
+
+        // Supprimer l'association de l'appointment avec les services (si l'appointment contient des services)
+        if (appointment.services && appointment.services.length > 0) {
+            await Service.updateMany(
+                { _id: { $in: appointment.services } }, // Trouve toutes les services liées au services
+                { $pull: { appointment: appointment._id } } // Retire l'ID de l'appointment de la liste des appointments associés
+            );
+        }
+
+        // Supprimer le rendez-vous
+        await appointment.remove();
+        
         res.status(200).json({ message: 'Rendez-vous supprimé avec succès' });
     } catch (error) {
         res.status(500).json({ message: error.message });
