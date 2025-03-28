@@ -19,6 +19,8 @@ router.get('/appointments/:id', verifyToken, appointmentController.getAppointmen
 router.put('/appointments/:id', verifyToken, verifyRole(['manager']), appointmentController.updateAppointment);
 
 // Supprimer un rendez-vous - uniquement pour un utilisateur avec le rôle 'manager'
-router.delete('/appointments/:id', verifyToken, verifyRole(['manager']), appointmentController.deleteAppointment);
+router.delete('/appointments/:id', verifyToken, verifyRole(['manager','client']), appointmentController.deleteAppointment);
+
+router.put('/appointments/cancel/:id', verifyToken, verifyRole(['client']), appointmentController.cancelAppointment);
 
 module.exports = router;

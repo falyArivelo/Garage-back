@@ -84,12 +84,12 @@ const deleteAppointment = async (req, res) => {
         if (!appointment) return res.status(404).json({ message: 'Rendez-vous non trouvé' });
 
         // Supprimer l'association de l'appointment avec les services (si l'appointment contient des services)
-        if (appointment.services && appointment.services.length > 0) {
-            await Service.updateMany(
-                { _id: { $in: appointment.services } }, // Trouve toutes les services liées au services
-                { $pull: { appointment: appointment._id } } // Retire l'ID de l'appointment de la liste des appointments associés
-            );
-        }
+        // if (appointment.services && appointment.services.length > 0) {
+        //     await Service.updateMany(
+        //         { _id: { $in: appointment.services } }, // Trouve toutes les services liées au services
+        //         { $pull: { appointment: appointment._id } } // Retire l'ID de l'appointment de la liste des appointments associés
+        //     );
+        // }
 
         // Supprimer le rendez-vous
         await appointment.remove();
@@ -100,11 +100,31 @@ const deleteAppointment = async (req, res) => {
     }
 };
 
+
+// Annulé  un rendez-vous
+const cancelAppointment = async (req, res) => {
+    try {
+        const appointment = await Appointment.findByIdAndUpdate(
+            req.params.id, 
+            req.body, 
+            { new: true, runValidators: true }
+        );
+
+        if (!appointment) {
+            return res.status(404).json({ message: 'Rendez-vous non trouvé' });
+        }
+
+        res.status(200).json(appointment);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
 module.exports = {
     createAppointment,
     getAllAppointments,
     getAppointmentsByClient,
     getAppointmentById,
     updateAppointment,
-    deleteAppointment
+    deleteAppointment,
+    cancelAppointment
 };
