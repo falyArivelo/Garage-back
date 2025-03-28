@@ -19,7 +19,7 @@ const sendEmail = async (req, res) => {
         });
 
         let info = await transporter.sendMail({
-            from: '"Garage" <randrianarisonnancy05@gmail.com>',
+            from: '"Carcare" <randrianarisonnancy05@gmail.com>',
             to, // Email du destinataire
             subject,
             text, // Contenu du mail en texte brut
