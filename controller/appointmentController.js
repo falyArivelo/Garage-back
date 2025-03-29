@@ -30,8 +30,26 @@ const createAppointment = async (req, res) => {
 // Obtenir tous les rendez-vous
 const getAllAppointments = async (req, res) => {
     try {
-        const appointments = await Appointment.find().populate('client', 'username email').populate('vehicle', 'model brand');
-        res.status(200).json(appointments);
+        const appointments = await Appointment.find()
+            .populate('client', 'username email')
+            .populate('vehicle', 'model brand')
+            .populate('services', 'name category price');
+
+        // Ajouter un champ totalEstimatedPrice pour chaque rendez-vous
+        const appointmentsWithTotalPrice = appointments.map(appointment => {
+            // Calculer le prix total estimé en sommant les prix des services
+            const totalEstimatedPrice = appointment.services.reduce((total, service) => {
+                return total + service.price;
+            }, 0);
+
+            // Ajouter totalEstimatedPrice au rendez-vous
+            return {
+                ...appointment.toObject(),
+                totalEstimatedPrice
+            };
+        });
+
+        res.status(200).json(appointmentsWithTotalPrice);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -42,8 +60,10 @@ const getAppointmentsByClient = async (req, res) => {
     try {
         const userId = req.query.user_id;
         const appointments = await Appointment.find({ client: userId })
-        .populate('vehicle')
-        .populate('services');
+            .populate('vehicle')
+            .populate('services')
+            .sort({ appointmentDate: -1 });
+
         if (!appointments) return res.status(404).json({ message: 'Aucun rendez-vous trouvé pour ce client' });
         res.status(200).json(appointments);
     } catch (error) {
@@ -93,7 +113,7 @@ const deleteAppointment = async (req, res) => {
 
         // Supprimer le rendez-vous
         await appointment.remove();
-        
+
         res.status(200).json({ message: 'Rendez-vous supprimé avec succès' });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -105,8 +125,8 @@ const deleteAppointment = async (req, res) => {
 const cancelAppointment = async (req, res) => {
     try {
         const appointment = await Appointment.findByIdAndUpdate(
-            req.params.id, 
-            req.body, 
+            req.params.id,
+            { status: "Annulé" },
             { new: true, runValidators: true }
         );
 
@@ -119,6 +139,36 @@ const cancelAppointment = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+const changingStatusAppointmentByManager = async (req, res) => {
+    try {
+        const { status, message, userId } = req.body; // Récupère le statut, message et l'ID de l'auteur
+
+        // Trouver le rendez-vous par ID et mettre à jour
+        const appointment = await Appointment.findByIdAndUpdate(
+            req.params.id,
+            { 
+                status: status, // Mettre à jour le statut
+                $push: {  // Ajouter un message dans les notes
+                    notes: {
+                        author: userId,  // L'auteur du message
+                        message: message  // Le message
+                    }
+                }
+            },
+            { new: true, runValidators: true }
+        );
+
+        // Si le rendez-vous n'existe pas
+        if (!appointment) return res.status(404).json({ message: 'Rendez-vous non trouvé' });
+
+        // Retourne le rendez-vous mis à jour
+        res.status(200).json(appointment);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
 module.exports = {
     createAppointment,
     getAllAppointments,
@@ -126,5 +176,6 @@ module.exports = {
     getAppointmentById,
     updateAppointment,
     deleteAppointment,
-    cancelAppointment
+    cancelAppointment,
+    changingStatusAppointmentByManager
 };
