@@ -78,11 +78,11 @@ router.get('/users', verifyToken, verifyRole(['manager']), async (req, res) => {
 router.post('/users', verifyToken, verifyRole(['manager']), createUser);
 
 // Route pour récupérer un utilisateur spécifique (par ID)
-router.get('/users/:id', verifyToken, verifyRole(['mecanicien', 'manager']), getUserById);
+router.get('/users/:id', verifyToken, getUserById);
 
 
 // Modifier un utilisateur (Manager seulement)
-router.put('/users/:id', verifyToken, verifyRole(['manager']), updateUser);
+router.put('/users/:id', verifyToken, updateUser);
 
 // Supprimer un utilisateur (Manager seulement)
 router.delete('/users/:id', verifyToken, verifyRole(['manager']), deleteUser);

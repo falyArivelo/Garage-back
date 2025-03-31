@@ -33,8 +33,10 @@ const getAllAppointments = async (req, res) => {
         const appointments = await Appointment.find()
             .populate('client', 'username email')
             .populate('vehicle', 'model brand')
-            .populate('services', 'name category price');
+            .populate('services', 'name category price')
+            .sort({ appointmentDate: -1 });
 
+    
         // Ajouter un champ totalEstimatedPrice pour chaque rendez-vous
         const appointmentsWithTotalPrice = appointments.map(appointment => {
             // Calculer le prix total estimé en sommant les prix des services
