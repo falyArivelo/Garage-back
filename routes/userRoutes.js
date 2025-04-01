@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs')
 const User = require('../models/User')
 const { verifyToken, verifyRole } = require('../middleware/auth');
-const { createUser, updateUser, deleteUser, getAllUsers, getUserById ,getClients} = require('../controller/userController');
+const { createUser, updateUser, deleteUser, getAllUsers, getUserById ,getClients, getMechanics} = require('../controller/userController');
 
 const router = express.Router();
 
@@ -89,6 +89,7 @@ router.delete('/users/:id', verifyToken, verifyRole(['manager']), deleteUser);
 
 //liste des client
 router.get('/clients',verifyToken, verifyRole(['manager']), getClients);
+router.get('/users/mechanics',verifyToken, verifyRole(['manager']), getMechanics);
 
 
 module.exports = router;
