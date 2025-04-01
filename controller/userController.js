@@ -50,7 +50,7 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     try {
-        const {id} = req.params
+        const { id } = req.params
         const user = await User.findByIdAndDelete(id)
         if (!user) return res.status(404).json({ message: 'Utilisateur introuvable' });
 
@@ -69,9 +69,9 @@ const getAllUsers = async (req, res) => {
     }
 };
 
-const getUserById = async (req,res)=>{
+const getUserById = async (req, res) => {
     try {
-        const {id} = req.params
+        const { id } = req.params
         const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: "Utilisateur non trouvé" });
@@ -82,14 +82,23 @@ const getUserById = async (req,res)=>{
     }
 }
 
-
 const getClients = async (req, res) => {
     try {
-      const clients = await User.find({ role: 'client' });
-      res.status(200).json(clients);
+        const clients = await User.find({ role: 'client' });
+        res.status(200).json(clients);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
-  };
-  
-module.exports = { createUser, updateUser, deleteUser, getAllUsers ,getUserById,getClients};
+};
+
+
+const getMechanics = async (req, res) => {
+    try {
+        const clients = await User.find({ role: 'mecanicien' });
+        res.status(200).json(clients);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { createUser, updateUser, deleteUser, getAllUsers, getUserById, getClients,getMechanics };
