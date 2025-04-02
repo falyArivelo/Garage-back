@@ -62,7 +62,12 @@ const getAppointmentsByClient = async (req, res) => {
         const userId = req.query.user_id;
         const appointments = await Appointment.find({ client: userId })
             .populate('vehicle')
-            .populate('services')
+            .populate({
+                path: 'services', // Récupère les services
+                populate: {
+                    path: 'pieces', // Récupère les pièces associées à chaque service
+                }
+            })
             .sort({ appointmentDate: -1 });
 
         if (!appointments) return res.status(404).json({ message: 'Aucun rendez-vous trouvé pour ce client' });
@@ -77,8 +82,13 @@ const getAppointmentById = async (req, res) => {
     try {
         const appointment = await Appointment.findById(req.params.id)
             .populate('client', 'username email')
-            .populate('vehicle', 'model brand')
-            .populate('services', 'name description estimatedDuration price')
+            .populate('vehicle')
+            .populate({
+                path: 'services', // Récupère les services
+                populate: {
+                    path: 'pieces', // Récupère les pièces associées à chaque service
+                }
+            })
             .populate('invoice', 'amount status');
 
         const totalEstimatedPrice = appointment.services.reduce((total, service) => {
