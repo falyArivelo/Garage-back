@@ -43,7 +43,8 @@ const appointmentSchema = new mongoose.Schema({
     invoice: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Invoice'
-    }
+    },
+    
 }, { timestamps: true });
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);

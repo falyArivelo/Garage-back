@@ -21,4 +21,10 @@ router.put('/tasks/:id/complete', verifyToken, verifyRole(['manager', 'mecanicie
 //  Supprimer une tâche - uniquement pour un 'manager'
 router.delete('/tasks/:id', verifyToken, verifyRole(['manager']), taskController.deleteTask);
 
+// Route pour obtenir les tâches liées à un appointment
+router.get('/tasks/appointments/:appointmentId', taskController.getTasksForAppointment);
+
+//task d'un mecanicien
+router.get('/tasks/mechanic/:mechanicId', verifyToken, verifyRole(['manager','mecanicien']), taskController.getTasksByMechanic);
+
 module.exports = router;

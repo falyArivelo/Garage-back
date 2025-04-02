@@ -1,5 +1,4 @@
 const Appointment = require('../models/Appointment');
-const { isAppointmentSlotAvailable } = require('../helpers/appointmentHelper')
 // Créer un rendez-vous
 const createAppointment = async (req, res) => {
     try {
@@ -33,10 +32,10 @@ const getAllAppointments = async (req, res) => {
         const appointments = await Appointment.find()
             .populate('client', 'username email')
             .populate('vehicle', 'model brand')
-            .populate('services', 'name category price')
+            .populate('services', 'name category price estimatedDuration')
             .sort({ appointmentDate: -1 });
 
-    
+
         // Ajouter un champ totalEstimatedPrice pour chaque rendez-vous
         const appointmentsWithTotalPrice = appointments.map(appointment => {
             // Calculer le prix total estimé en sommant les prix des services
@@ -79,10 +78,20 @@ const getAppointmentById = async (req, res) => {
         const appointment = await Appointment.findById(req.params.id)
             .populate('client', 'username email')
             .populate('vehicle', 'model brand')
-            .populate('services', 'name description')
+            .populate('services', 'name description estimatedDuration price')
             .populate('invoice', 'amount status');
+
+        const totalEstimatedPrice = appointment.services.reduce((total, service) => {
+            return total + service.price;
+        }, 0);
+
         if (!appointment) return res.status(404).json({ message: 'Rendez-vous non trouvé' });
-        res.status(200).json(appointment);
+
+        return res.status(200).json({
+            ...appointment.toObject(),
+            totalEstimatedPrice
+        });
+
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -149,7 +158,7 @@ const changingStatusAppointmentByManager = async (req, res) => {
         // Trouver le rendez-vous par ID et mettre à jour
         const appointment = await Appointment.findByIdAndUpdate(
             req.params.id,
-            { 
+            {
                 status: status, // Mettre à jour le statut
                 $push: {  // Ajouter un message dans les notes
                     notes: {

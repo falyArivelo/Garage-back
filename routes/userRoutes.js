@@ -89,7 +89,7 @@ router.delete('/users/:id', verifyToken, verifyRole(['manager']), deleteUser);
 
 //liste des client
 router.get('/clients',verifyToken, verifyRole(['manager']), getClients);
-router.get('/users/mechanics',verifyToken, verifyRole(['manager']), getMechanics);
+router.get('/mechanics',verifyToken, verifyRole(['manager']), getMechanics);
 
 
 module.exports = router;
