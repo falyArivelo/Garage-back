@@ -161,6 +161,46 @@ const getTasksByMechanic = async (req, res) => {
     }
 };
 
+const updateTaskStatus = async (req, res) => {
+    try {
+        const { status, message , userId} = req.body;
+
+        // Préparer l'objet de mise à jour
+        let updateFields = { status };
+
+        // Vérifier si la tâche doit être marquée comme terminée
+        if (status === 'Terminé') {
+            updateFields.isDone = true;
+        }
+
+        // Ajouter une note si un message est fourni
+        if (message) {
+            updateFields.$push = {
+                notes: {
+                    author: userId,
+                    message: message,
+                    createdAt: new Date()
+                }
+            };
+        }
+
+        // Mettre à jour la tâche
+        const updatedTask = await Task.findByIdAndUpdate(
+            req.params.id,
+            updateFields,
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedTask) {
+            return res.status(404).json({ message: "Tâche non trouvée" });
+        }
+
+        res.status(200).json(updatedTask);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // Exporter les fonctions
 module.exports = {
     createTask,
@@ -170,5 +210,6 @@ module.exports = {
     markTaskAsDone,
     deleteTask,
     getTasksForAppointment,
-    getTasksByMechanic
+    getTasksByMechanic,
+    updateTaskStatus
 };

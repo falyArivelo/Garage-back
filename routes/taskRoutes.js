@@ -26,5 +26,7 @@ router.get('/tasks/appointments/:appointmentId', taskController.getTasksForAppoi
 
 //task d'un mecanicien
 router.get('/tasks/mechanic/:mechanicId', verifyToken, verifyRole(['manager','mecanicien']), taskController.getTasksByMechanic);
+// mettre a jour status et ajouter note
+router.put('/tasks/:id/updateStatus', verifyToken, taskController.updateTaskStatus);
 
 module.exports = router;

@@ -1,11 +1,13 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs')
+const multer = require('multer');
 const User = require('../models/User')
 const { verifyToken, verifyRole } = require('../middleware/auth');
-const { createUser, updateUser, deleteUser, getAllUsers, getUserById ,getClients, getMechanics} = require('../controller/userController');
+const { createUser, updateUser, deleteUser, getAllUsers, getUserById ,getClients, getMechanics,uploadUserImage,getUserImage} = require('../controller/userController');
 
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() }); // Utilisation de la mémoire pour l'image
 
 router.post('/signup', async (req, res) => {
     try {
@@ -91,5 +93,8 @@ router.delete('/users/:id', verifyToken, verifyRole(['manager']), deleteUser);
 router.get('/clients',verifyToken, verifyRole(['manager']), getClients);
 router.get('/mechanics',verifyToken, verifyRole(['manager']), getMechanics);
 
+router.post('/upload/:userId', upload.single('image'),uploadUserImage);
+
+router.get('/user/image/:userId',getUserImage);
 
 module.exports = router;
