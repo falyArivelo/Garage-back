@@ -1,11 +1,13 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs')
+const multer = require('multer');
 const User = require('../models/User')
 const { verifyToken, verifyRole } = require('../middleware/auth');
-const { createUser, updateUser, deleteUser, getAllUsers, getUserById ,getClients} = require('../controller/userController');
+const { createUser, updateUser, deleteUser, getAllUsers, getUserById ,getClients, getMechanics,uploadUserImage,getUserImage} = require('../controller/userController');
 
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() }); // Utilisation de la mémoire pour l'image
 
 router.post('/signup', async (req, res) => {
     try {
@@ -78,17 +80,21 @@ router.get('/users', verifyToken, verifyRole(['manager']), async (req, res) => {
 router.post('/users', verifyToken, verifyRole(['manager']), createUser);
 
 // Route pour récupérer un utilisateur spécifique (par ID)
-router.get('/users/:id', verifyToken, verifyRole(['mecanicien', 'manager']), getUserById);
+router.get('/users/:id', verifyToken, getUserById);
 
 
 // Modifier un utilisateur (Manager seulement)
-router.put('/users/:id', verifyToken, verifyRole(['manager']), updateUser);
+router.put('/users/:id', verifyToken, updateUser);
 
 // Supprimer un utilisateur (Manager seulement)
 router.delete('/users/:id', verifyToken, verifyRole(['manager']), deleteUser);
 
 //liste des client
 router.get('/clients',verifyToken, verifyRole(['manager']), getClients);
+router.get('/mechanics',verifyToken, verifyRole(['manager']), getMechanics);
 
+router.post('/upload/:userId', upload.single('image'),uploadUserImage);
+
+router.get('/user/image/:userId',getUserImage);
 
 module.exports = router;

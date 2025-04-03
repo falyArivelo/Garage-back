@@ -25,9 +25,13 @@ const serviceSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
-    piece: {
-        type: String,
-    },
+    pieces: [
+        { 
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'Piece',
+            required: true
+        }
+    ],
     image: {
         type: String,
         default: null

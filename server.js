@@ -21,6 +21,9 @@ app.use('/', require('./routes/userRoutes'));
 app.use('/', require('./routes/serviceRoutes'));
 app.use('/', require('./routes/vehicleRoutes'));
 app.use('/', require('./routes/appointmentRoutes'));
+app.use('/', require('./routes/pieceRoutes'));
+app.use('/', require('./routes/emailRoutes'));
+app.use('/', require('./routes/taskRoutes'));
 
 app.listen(PORT, () => console.log(`Serveur démarré sur le port 
 ${PORT}`));

@@ -7,10 +7,13 @@ const { verifyToken, verifyRole } = require('../middleware/auth');
 router.post('/pieces', verifyToken, verifyRole(['manager']), pieceController.createPiece);
 
 // Obtenir tous les pieces - accessible pour tout utilisateur authentifié
-router.get('/pieces', verifyToken, pieceController.getAllPieces);
+router.get('/pieces', verifyToken, verifyRole(['manager','mecanicien']), pieceController.getAllPieces);
 
 // Obtenir une piece par ID - accessible pour tout utilisateur authentifié
-router.get('/pieces/:id', verifyToken, pieceController.getPieceById);
+router.get('/pieces/:id', verifyToken, verifyRole(['manager','mecanicien']), pieceController.getPieceById);
+
+// Obtenir nom de la piece - accessible pour tout utilisateur authentifié
+router.get('/pieces/name/:name', verifyToken, verifyRole(['manager','mecanicien']), pieceController.getPieceByName);
 
 // Mettre à jour une piece - uniquement pour un utilisateur avec le rôle 'manager'
 router.put('/pieces/:id', verifyToken, verifyRole(['manager']), pieceController.updatePiece);
