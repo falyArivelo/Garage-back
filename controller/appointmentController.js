@@ -82,9 +82,15 @@ const getAppointmentsByClient = async (req, res) => {
 const getAppointmentById = async (req, res) => {
     try {
         const appointment = await Appointment.findById(req.params.id)
-            .populate('client', 'username email')
-            .populate('vehicle', 'model brand')
-            .populate('services', 'name description')
+            .populate('client')
+            .populate('vehicle')
+            .populate('vehicle')
+            .populate({
+                path: 'services', // Récupère les services
+                populate: {
+                    path: 'pieces', // Récupère les pièces associées à chaque service
+                }
+            })
             .populate('invoice', 'amount status');
         if (!appointment) return res.status(404).json({ message: 'Rendez-vous non trouvé' });
         res.status(200).json(appointment);

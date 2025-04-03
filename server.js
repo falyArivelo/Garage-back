@@ -24,6 +24,6 @@ app.use('/', require('./routes/appointmentRoutes'));
 app.use('/', require('./routes/pieceRoutes'));
 app.use('/', require('./routes/emailRoutes'));
 app.use('/', require('./routes/taskRoutes'));
+app.use('/', require('./routes/quoteRoutes'));
 
-app.listen(PORT, () => console.log(`Serveur démarré sur le port 
-${PORT}`));
+app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
