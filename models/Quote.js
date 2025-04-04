@@ -18,6 +18,11 @@ const quoteSchema = new mongoose.Schema({
         enum: ['En attente', 'Validé', 'Annulé'],
         default: 'En attente'
     },
+    paiement: {
+        type: String,
+        enum: ['Non Payé', 'Payé'],
+        default: 'Non Payé'
+    },
     validUntil: {
         type: Date,
         required: true
